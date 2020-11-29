@@ -1,0 +1,27 @@
+<!-- /views/upload.html -->
+<html>
+
+<head>
+    <title>Munki Package Uploader</title>
+
+    <!-- 1 -->
+    <link href="/css/dropzone.css" type="text/css" rel="stylesheet" />
+
+    <!-- 2 -->
+    <script src="/js/dropzone.js"></script>
+</head>
+
+<body>
+
+    <!-- 3 -->
+    <form action="/upload" method="POST" class="dropzone" id="my-dropzone">
+        <label for="subdir">Enter a subdirectory if needed:</label><br>
+        <input type="text" id="subdir" name="subdir"><br>
+        <div class="fallback">
+            <input name="file" type="file" multiple />
+            <input type="submit" value="Upload" />
+        </div>
+    </form>
+</body>
+
+</html>
