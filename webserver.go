@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 )
 
-const uploadPath = "/munki_repo/pkgs"
+const basePath = "/munki_repo"
 
 func uploadFile(w http.ResponseWriter, r *http.Request) {
 
@@ -29,20 +29,32 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 	//
 	fileBytes, err := ioutil.ReadAll(file)
 
+	//
+	// Grab values from the form
+	//
+	file_type_path := r.FormValue("upload_type")
 	subdir := r.FormValue("subdir")
-
-	if _, err := os.Stat(filepath.Join(uploadPath, subdir)); os.IsNotExist(err) {
-		os.Mkdir(filepath.Join(uploadPath, subdir), 0744)
+	full_folder_path := filepath.Join(basePath, file_type_path, subdir)
+	//
+	// Check if path exists, if it doesnt, create it and all children
+	//
+	if _, err := os.Stat(full_folder_path); os.IsNotExist(err) {
+		os.MkdirAll(full_folder_path, 0744)
 	}
 
-	newPath := filepath.Join(uploadPath, subdir, handler.Filename)
-
-	newFile, err := os.Create(newPath)
+	//
+	// Now that we know the path exists, create the full file path and create the file
+	//
+	full_file_path := filepath.Join(full_folder_path, handler.Filename)
+	newFile, err := os.Create(full_file_path)
 	if err != nil {
 		return
 	}
 	defer newFile.Close()
 
+	//
+	// Write our byte array to the file we created
+	//
 	if _, err := newFile.Write(fileBytes); err != nil || newFile.Close() != nil {
 		return
 	}
@@ -50,7 +62,7 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
-	fileServer := http.FileServer(http.Dir("static"))
+	fileServer := http.FileServer(http.Dir("./static"))
 	http.Handle("/", fileServer)
 	http.Handle("/repo/", http.StripPrefix("/repo/", http.FileServer(http.Dir("/munki_repo"))))
 	http.HandleFunc("/upload", uploadFile)

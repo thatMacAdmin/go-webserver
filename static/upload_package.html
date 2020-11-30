@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Munki Package Uploader</title>
+    <title>Munki Uploader</title>
 
     <!-- 1 -->
     <link href="/css/dropzone.css" type="text/css" rel="stylesheet" />
@@ -15,8 +15,18 @@
 
     <!-- 3 -->
     <form action="/upload" method="POST" class="dropzone" id="my-dropzone">
-        <label for="subdir">Enter a subdirectory if needed:</label><br>
-        <input type="text" id="subdir" name="subdir"><br>
+        <p>Select a package type:</p>
+        <select name = "upload_type" id="upload_type">
+            <option value = "catalogs" selected>Catalog</option>
+            <option value = "icons">Icon</option>
+            <option value = "manifests">Manifest</option>
+            <option value = "pkgsinfo">Package Info</option>
+            <option value = "pkgs">Package</option>
+         </select>
+
+        <p>Enter a subdirectory if needed:</p>
+        <input type="text" id="subdir" name="subdir"/>
+
         <div class="fallback">
             <input name="file" type="file" multiple />
             <input type="submit" value="Upload" />
